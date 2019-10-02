@@ -28,7 +28,9 @@ namespace WebClient
                 request.AnalyzeBody(body, splitIndex + 4, msg.Length - splitIndex - 4, reqData);
 
                 request.AnalyzeHeader(GetEncodedStr(0, splitIndex + 1,reqData,Encoding.UTF8));
-                
+
+                request.FillInputStream(splitIndex + 4, msg.Length - splitIndex - 4, reqData);
+
 
                 return request;
             }
@@ -239,24 +241,39 @@ namespace WebClient
         /// <param name="formBody"></param>
         private static void AnalyzeFormBody(this HttpRequestFile fileInfo, int from, int to, byte[] reqData)
         {
-            using (var file = File.Open(@"C:\Users\mengt\Desktop\无标题.png", FileMode.Open))
+            try
             {
-                byte[] ddd = new byte[file.Length];
-                file.Read(ddd, 0, ddd.Length);
-                try
-                {
-                    
-                    var buffer = reqData.Skip(from).Take(to - from).ToArray();
 
-                    var fstream = new MemoryStream();
-                    fstream.Write(buffer, 0, buffer.Length);
-                    fstream.Flush();
-                    fstream.Position = 0;
-                    fileInfo.FileStream = fstream;
-                }
-                catch (Exception)
-                {
-                }
+                var buffer = reqData.Skip(from).Take(to - from).ToArray();
+
+                var fstream = new MemoryStream();
+                fstream.Write(buffer, 0, buffer.Length);
+                fstream.Flush();
+                fstream.Position = 0;
+                fileInfo.FileStream = fstream;
+            }
+            catch (Exception)
+            {
+            }
+        }
+        /// <summary>
+        /// 填充输入流
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        /// <param name="formBody"></param>
+        private static void FillInputStream(this HttpRequest request, int from, int to, byte[] reqData)
+        {
+            try
+            {
+                var buffer = reqData.Skip(from).Take(to - from).ToArray();
+                var inputStream = new MemoryStream();
+                inputStream.Write(buffer, 0, buffer.Length);
+                inputStream.Flush();
+                inputStream.Position = 0;
+                request.InputStream = inputStream;
+            }
+            catch (Exception)
+            {
             }
         }
 

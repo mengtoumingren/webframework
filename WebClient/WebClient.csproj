@@ -41,13 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\RemarkAttribute.cs" />
+    <Compile Include="Cache.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="Extends\EnumExtends.cs" />
     <Compile Include="HttpContext.cs" />
     <Compile Include="HttpContextFactory.cs" />
     <Compile Include="HttpPostedFile.cs" />
     <Compile Include="HttpRequest.cs" />
     <Compile Include="HttpRequestFactory.cs" />
     <Compile Include="HttpRequestFile.cs" />
+    <Compile Include="HttpResponse.cs" />
+    <Compile Include="HttpResponseFactory.cs" />
+    <Compile Include="HttpResponseState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

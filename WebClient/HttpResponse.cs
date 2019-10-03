@@ -29,6 +29,10 @@ namespace WebClient
             byte[] header = encoding.GetBytes(value);
             Body.Write(header, 0, header.Length);
         }
+        public void Write(string value)
+        {
+            Write(value, Encoding.UTF8);
+        }
         public void WriteFile(string path)
         {
             using (var file = File.OpenRead(path))

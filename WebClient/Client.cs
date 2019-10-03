@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using WebClient.MiddleWareModule;
+using WebClient.MiddleWares.StaticsFile;
 using WebClientSDK;
 
 namespace WebClient
@@ -69,13 +70,15 @@ namespace WebClient
 
         private void Configure(MiddleWare<HttpContext> app)
         {
+            
+
+            //静态文件处理模型
+            app.Add(new StaticsFileMiddleWare());
+
             app.Add(async (context, next) =>
             {
-                var response = context.Response;
-                var path = @"C:\Users\mengt\Pictures\Screenshots\屏幕截图(1).png";
-                response.WriteFile(path);
-                response.ContentType = "octet-stream";
-                response.Headers["Content-Disposition"] = $"filename=\"{Path.GetFileName(path)}\"";
+                context.Response.ContentType = "text/html";
+                context.Response.Write("<h2>hello world !!</h2>");
             });
         }
     }

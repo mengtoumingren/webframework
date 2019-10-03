@@ -18,7 +18,7 @@ namespace WebClient.MiddleWareModule
         {
             MiddleWares.Add(middleWare);
         }
-        public void Add(IMiddleWare middleWare)
+        public void Add(IMiddleWare<T> middleWare)
         {
             MiddleWares.Add(async (s, next) =>
             {

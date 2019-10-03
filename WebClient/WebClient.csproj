@@ -57,6 +57,7 @@
     <Compile Include="MiddleWareModule\IMiddleWare.cs" />
     <Compile Include="MiddleWareModule\MiddleWare.cs" />
     <Compile Include="MiddleWareModule\MiddleWareHandler.cs" />
+    <Compile Include="MiddleWares\Session\SessionMiddleWare.cs" />
     <Compile Include="MiddleWares\StaticsFile\StaticsFileMiddleWare.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session.cs" />

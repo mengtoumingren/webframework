@@ -15,6 +15,7 @@ namespace WebClient
         public string Method { get; internal set; }
         public string HttpVersion { get; internal set; }
         public NameValueCollection Headers { get; internal set; }
+        public NameValueCollection Cookies { get; internal set; }
         public NameValueCollection Querystring { get; internal set; }
         public NameValueCollection Form { get; internal set; }
         public List<HttpRequestFile> Files { get; internal set; }

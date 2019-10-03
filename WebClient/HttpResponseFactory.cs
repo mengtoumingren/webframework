@@ -22,7 +22,8 @@ namespace WebClient
             rsp.Body.Position = 0;
             rsp.HttpVersion = "HTTP/1.1";
             rsp.Headers = new System.Collections.Specialized.NameValueCollection();
-            rsp.State= HttpResponseState.OK;
+            rsp.State = HttpResponseState.OK;
+            rsp.Cookies = new System.Collections.Specialized.NameValueCollection();
             return rsp;
         }
 
@@ -39,10 +40,21 @@ namespace WebClient
 
             foreach (var key in httpResponse.Headers.AllKeys)
             {
-                if (key.ToLower().Equals("Content-Type")) continue;
+                if (key.ToLower().Equals("content-type")) continue;
                 if (key.ToLower().Equals("content-length")) continue;
+                if (key.ToLower().Equals("set-cookie")) continue;
                 writer.AppendFormat("{0}:{1}\r\n", key, httpResponse.Headers[key]);
             }
+            //cookies
+            if(httpResponse.Cookies.Count>0)
+            {
+                var builder = new StringBuilder();
+                foreach (var key in httpResponse.Cookies.AllKeys)
+                    builder.AppendFormat("{0}={1};", key, httpResponse.Cookies[key]);
+                builder.Append("path=/;");
+                writer.AppendFormat("Set-Cookie:{0}\r\n", builder.ToString());
+            }
+
             writer.AppendFormat("Content-Type:{0}\r\n", httpResponse.ContentType);
             writer.AppendFormat("Content-Length:{0}\r\n", httpResponse.Body.Length);
             writer.Append("\r\n");

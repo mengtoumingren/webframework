@@ -28,9 +28,9 @@ namespace WebClient
                 request.AnalyzeBody(body, splitIndex + 4, msg.Length - splitIndex - 4, reqData);
 
                 request.AnalyzeHeader(GetEncodedStr(0, splitIndex + 1,reqData,Encoding.UTF8));
+                request.AnalyzeCookie();
 
                 request.FillInputStream(splitIndex + 4, msg.Length - splitIndex - 4, reqData);
-
 
                 return request;
             }
@@ -39,6 +39,9 @@ namespace WebClient
                 return null;
             }
         }
+
+
+
         #region header
         /// <summary>
         /// 处理头部
@@ -103,6 +106,30 @@ namespace WebClient
             }
 
         }
+        private static void AnalyzeCookie(this HttpRequest request)
+        {
+            
+            //处理url上的参数
+            try
+            {
+                request.Cookies = new NameValueCollection();
+                var cookie = request.Headers["Cookie"]??"";
+                foreach (var item in cookie.Split(';'))
+                {
+                    var cookieInfo = item.Split('=');
+                    if(cookieInfo.Length==2)
+                    {
+                        request.Cookies[cookieInfo[0].Trim()] = cookieInfo[1].Trim().Trim('\r').Trim('\n');
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //
+            }
+
+        }
+
         #endregion
         #region body
         /// <summary>

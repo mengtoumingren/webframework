@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using WebClient.MiddleWareModule;
+using WebClient.MiddleWares.Session;
 using WebClient.MiddleWares.StaticsFile;
 using WebClientSDK;
 
@@ -70,15 +71,30 @@ namespace WebClient
 
         private void Configure(MiddleWare<HttpContext> app)
         {
-            
+            //全局异常处理
+            app.Add(async (context, next) =>
+            {
+                try
+                {
+                    await next();
+                }
+                catch (Exception ex)
+                {
+                    context.Response.State = HttpResponseState.InternalServerError;
+                }
+            });
 
             //静态文件处理模型
             app.Add(new StaticsFileMiddleWare());
+            //session模块
+            app.Add(new SessionMiddleWare());
 
             app.Add(async (context, next) =>
             {
                 context.Response.ContentType = "text/html";
                 context.Response.Write("<h2>hello world !!</h2>");
+                context.Response.Write($"<h2>sessionId:{context.Request.Cookies["SessionId"]}</h2>");
+                context.Response.Write("<img src='/bg.jpeg'/>");
             });
         }
     }

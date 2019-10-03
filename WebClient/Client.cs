@@ -11,6 +11,16 @@ namespace WebClient
 {
     public class Client : IWebClient
     {
+        private MiddleWareHandler<HttpContext> middleWareHandler;
+        private MiddleWare<HttpContext> middleWare;
+        public Client()
+        {
+            //初始化中间件
+            middleWareHandler = new MiddleWareHandler<HttpContext>();
+            middleWare = new MiddleWare<HttpContext>(middleWareHandler);
+            Configure(middleWare);
+        }
+
         public void  Start(TcpClient client)
         {
             var netStream = client.GetStream();
@@ -37,15 +47,17 @@ namespace WebClient
                             //Console.WriteLine(msg);
                             //初始化请求上下文（贯穿请求处理的对象）
                             var context = HttpContextFactory.CreateHttpContext(msg, reqData);
-                            //引入中间件模型，易于扩展请求流程
-                            MiddleWareHandler<HttpContext> middleWareHandler = new MiddleWareHandler<HttpContext>();
-                            MiddleWare<HttpContext> middleWare = new MiddleWare<HttpContext>(middleWareHandler);
-                            Configure(middleWare);
+                            Console.WriteLine(context.Request.Url);
+                            //执行中间件
                             Task.WaitAll(middleWareHandler.Execute(context));
                             //处理相应数据
                             HttpResponseFactory.WriteResponse(context.Response, netStream);
+
+                            //重置数据
+                            buffer = (byte[])emptybuffer.Clone();
+                            stream = new MemoryStream();
                         }
-                        buffer = (byte[])emptybuffer.Clone();
+                        
                     }
                 }
                 catch (Exception ex)

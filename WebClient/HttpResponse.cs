@@ -13,7 +13,10 @@ namespace WebClient
         public string HttpVersion { get; internal set; }
         public NameValueCollection Headers { get; internal set; }
         public  Stream Body { get;  internal set; }
+        public  Session Session { get;  internal set; }
         public HttpResponseState State { get; set; } = HttpResponseState.OK;
+
+
 
         public void Write(byte[] buffer, int offset, int count)
         {

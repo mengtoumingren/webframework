@@ -22,6 +22,7 @@ namespace WebClient
             rsp.Body.Position = 0;
             rsp.HttpVersion = "HTTP/1.1";
             rsp.Headers = new System.Collections.Specialized.NameValueCollection();
+            rsp.State= HttpResponseState.OK;
             return rsp;
         }
 
@@ -38,9 +39,11 @@ namespace WebClient
 
             foreach (var key in httpResponse.Headers.AllKeys)
             {
+                if (key.ToLower().Equals("Content-Type")) continue;
                 if (key.ToLower().Equals("content-length")) continue;
                 writer.AppendFormat("{0}:{1}\r\n", key, httpResponse.Headers[key]);
             }
+            writer.AppendFormat("Content-Type:{0}\r\n", httpResponse.ContentType);
             writer.AppendFormat("Content-Length:{0}\r\n", httpResponse.Body.Length);
             writer.Append("\r\n");
 

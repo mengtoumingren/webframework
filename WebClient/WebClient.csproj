@@ -54,7 +54,11 @@
     <Compile Include="HttpResponse.cs" />
     <Compile Include="HttpResponseFactory.cs" />
     <Compile Include="HttpResponseState.cs" />
+    <Compile Include="MiddleWareModule\IMiddleWare.cs" />
+    <Compile Include="MiddleWareModule\MiddleWare.cs" />
+    <Compile Include="MiddleWareModule\MiddleWareHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Session.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebClientSDK\WebClientSDK.csproj">

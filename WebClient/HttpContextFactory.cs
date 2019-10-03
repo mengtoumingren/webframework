@@ -14,7 +14,7 @@ namespace WebClient
         {
             var context = new HttpContext();
             context.Request = HttpRequestFactory.CreateHttpRequest(msg,reqData);
-
+            context.Response = HttpResponseFactory.CreateHttpResponse();
             return context;
         }
 

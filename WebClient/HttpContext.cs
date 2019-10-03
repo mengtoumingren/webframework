@@ -9,5 +9,8 @@ namespace WebClient
     public class HttpContext
     {
         public HttpRequest Request { get; internal set; }
+        public HttpResponse Response { get; internal set; }
+        public Session Session { get; internal set; }
+
     }
 }

@@ -30,6 +30,8 @@ namespace WebClient.Mvc
             LoadCache();
             //初始化应用
             InitApplication();
+            //初始化动作过滤器
+            InitActionFilter();
         }
 
         /// <summary>
@@ -64,7 +66,9 @@ namespace WebClient.Mvc
                 }
             }
         }
-
+        /// <summary>
+        /// 初始化web应用
+        /// </summary>
         private static void InitApplication()
         {
             //从指定目录下找到处理程序并缓存起来
@@ -85,7 +89,9 @@ namespace WebClient.Mvc
             }
             
         }
-
+        /// <summary>
+        /// 初始化动作过滤器
+        /// </summary>
         private static void InitActionFilter()
         {
             actionMiddleWareHandler = new MiddleWareHandler<ActionMiddWareContext>();
@@ -99,13 +105,16 @@ namespace WebClient.Mvc
                     actionMiddleWare.Add(async (context, next) =>
                     {
                         filter.OnExecuting(context.ActionContext);
-                        await context.Action();
                         await next();
                         filter.Executed(context.ActionContext);
                     });
                 }
-                
             }
+            //实际要调用继续往下调用的中间件
+            actionMiddleWare.Add(async (context, next) =>
+            {
+                await context.Action();
+            });
         }
 
         private static void Configure(MiddleWare<ActionContext> app)
@@ -170,8 +179,31 @@ namespace WebClient.Mvc
             {
                 await actionMiddleWareHandler.Execute(new ActionMiddWareContext { Action = next, ActionContext = context });
             });
-        }
 
+            //行为过滤器
+            app.Add(async (context, next) =>
+            {
+                await actionMiddleWareHandler.Execute(new ActionMiddWareContext { Action = next, ActionContext = context });
+            });
+
+            //核心逻辑
+            app.Add(async (context, next) =>
+            {
+                context.context.Response.ContentType = "text/html";
+                context.context.Response.Write("<head><meta http-equiv=\"content-type\" content=\"text/html; charset =utf-8\" /></head>");
+                context.context.Response.Write("<h2>hello world !!</h2>");
+                context.context.Response.Write("<h2>你好世界！</h2>");
+                context.context.Response.Write($"<h2>sessionId:{context.context.Request.Cookies["SessionId"]}</h2>");
+                context.context.Response.Write("<img src='/bg.jpeg'/>");
+            });
+
+        }
+        /// <summary>
+        /// 中间件处理方法
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
         public async Task DealWith(HttpContext context, Func<Task> next)
         {
             Configuration.Routes.Add(new Route
@@ -226,7 +258,7 @@ namespace WebClient.Mvc
         /// <returns></returns>
         private async Task ExecuteMiddleWare(HttpContext httpContext)
         {
-            if(!!dicActionCache.ContainsKey($"{httpContext.RouteData["controller"]}.{httpContext.RouteData["action"]}")) throw new Exception("路由为空！");
+            if(!dicActionCache.ContainsKey($"{httpContext.RouteData["controller"]}.{httpContext.RouteData["action"]}")) throw new Exception("路由为空！");
 
             var actionContext = new ActionContext();
             actionContext.context = httpContext;

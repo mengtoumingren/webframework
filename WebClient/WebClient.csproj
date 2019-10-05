@@ -65,6 +65,12 @@
     <Compile Include="MiddleWares\Mvc\ActionResult\IActionResult.cs" />
     <Compile Include="MiddleWares\Mvc\ActionResult\JsonResult.cs" />
     <Compile Include="MiddleWares\Mvc\BaseController.cs" />
+    <Compile Include="MiddleWares\Mvc\Filter\ActionContext.cs" />
+    <Compile Include="MiddleWares\Mvc\Filter\ActionFilter.cs" />
+    <Compile Include="MiddleWares\Mvc\Filter\AuthorizationFilter.cs" />
+    <Compile Include="MiddleWares\Mvc\Filter\ExceptionContext.cs" />
+    <Compile Include="MiddleWares\Mvc\Filter\ExceptionFilter.cs" />
+    <Compile Include="MiddleWares\Mvc\Filter\IFilter.cs" />
     <Compile Include="MiddleWares\Mvc\MvcMiddleWare.cs" />
     <Compile Include="MiddleWares\Session\SessionMiddleWare.cs" />
     <Compile Include="MiddleWares\StaticsFile\StaticsFileMiddleWare.cs" />

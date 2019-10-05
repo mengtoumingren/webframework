@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebClient.MiddleWares.Mvc.ActionResult;
+using WebClient.Mvc.ActionResult;
 
-namespace WebClient.MiddleWares.Mvc
+namespace WebClient.Mvc
 {
     public class BaseController
     {

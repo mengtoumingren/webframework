@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebClient.Mvc.Filter
+namespace WebClient
 {
-    public interface IFilter
+    public abstract class WebApplication
     {
+       public abstract void Start();
     }
 }

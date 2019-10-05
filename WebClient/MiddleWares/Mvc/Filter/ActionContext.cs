@@ -4,9 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using WebClient.MiddleWares.Mvc.ActionResult;
+using WebClient.Mvc.ActionResult;
 
-namespace WebClient.MiddleWares.Mvc.Filter
+namespace WebClient.Mvc.Filter
 {
     public class ActionContext
     {

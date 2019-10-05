@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WebClient.MiddleWareModule;
 using WebClient.MiddleWares.Session;
 using WebClient.MiddleWares.StaticsFile;
+using WebClient.Mvc;
 using WebClientSDK;
 
 namespace WebClient
@@ -93,18 +94,20 @@ namespace WebClient
             app.Add(new StaticsFileMiddleWare());
             //session模块
             app.Add(new SessionMiddleWare());
+            //mvc 中间件
+            app.Add(new MvcMiddleWare());
 
-            app.Add(async (context, next) =>
-            {
+            //app.Add(async (context, next) =>
+            //{
                 
-                context.Response.ContentType = "text/html";
-                context.Response.Write("<head><meta http-equiv=\"content-type\" content=\"text/html; charset =utf-8\" /></head>");
-                context.Response.Write("<h2>hello world !!</h2>");
-                context.Response.Write("<h2>你好世界！</h2>");
-                context.Response.Write($"<h2>sessionId:{context.Request.Cookies["SessionId"]}</h2>");
-                context.Response.Write("<img src='/bg.jpeg'/>");
-                //throw new Exception("test excp");
-            });
+            //    context.Response.ContentType = "text/html";
+            //    context.Response.Write("<head><meta http-equiv=\"content-type\" content=\"text/html; charset =utf-8\" /></head>");
+            //    context.Response.Write("<h2>hello world !!</h2>");
+            //    context.Response.Write("<h2>你好世界！</h2>");
+            //    context.Response.Write($"<h2>sessionId:{context.Request.Cookies["SessionId"]}</h2>");
+            //    context.Response.Write("<img src='/bg.jpeg'/>");
+            //    //throw new Exception("test excp");
+            //});
         }
     }
 }

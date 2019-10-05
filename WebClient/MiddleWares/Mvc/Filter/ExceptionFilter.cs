@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebClient.MiddleWares.Mvc.Filter
+namespace WebClient.Mvc.Filter
 {
     public abstract class ExceptionFilter
     {

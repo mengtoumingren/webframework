@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebClient.MiddleWares.Mvc.ActionResult
+namespace WebClient.Mvc.ActionResult
 {
     public class JsonResult : IActionResult
     {

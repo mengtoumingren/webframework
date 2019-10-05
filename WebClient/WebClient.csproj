@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -57,6 +60,12 @@
     <Compile Include="MiddleWareModule\IMiddleWare.cs" />
     <Compile Include="MiddleWareModule\MiddleWare.cs" />
     <Compile Include="MiddleWareModule\MiddleWareHandler.cs" />
+    <Compile Include="MiddleWares\Mvc\ActionResult\ContentResult.cs" />
+    <Compile Include="MiddleWares\Mvc\ActionResult\FileResult.cs" />
+    <Compile Include="MiddleWares\Mvc\ActionResult\IActionResult.cs" />
+    <Compile Include="MiddleWares\Mvc\ActionResult\JsonResult.cs" />
+    <Compile Include="MiddleWares\Mvc\BaseController.cs" />
+    <Compile Include="MiddleWares\Mvc\MvcMiddleWare.cs" />
     <Compile Include="MiddleWares\Session\SessionMiddleWare.cs" />
     <Compile Include="MiddleWares\StaticsFile\StaticsFileMiddleWare.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +76,9 @@
       <Project>{334caf5d-8295-48c6-b33b-7566bf7ec298}</Project>
       <Name>WebClientSDK</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

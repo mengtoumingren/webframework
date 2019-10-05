@@ -25,6 +25,7 @@ namespace WebClient
 
         public void  Start(TcpClient client)
         {
+            #region 
             var netStream = client.GetStream();
             MemoryStream stream = new MemoryStream();
             byte[] buffer = new byte[1024];
@@ -41,7 +42,7 @@ namespace WebClient
                         stream.Write(buffer, 0, length);
                         //当次请求的数据获取完成
                         if (length < buffer.Length || length == 0)
-                        {                            
+                        {
                             stream.Position = 0;
                             byte[] reqData = new byte[stream.Length];
                             stream.Read(reqData, 0, reqData.Length);
@@ -59,7 +60,7 @@ namespace WebClient
                             buffer = (byte[])emptybuffer.Clone();
                             stream = new MemoryStream();
                         }
-                        
+
                     }
                 }
                 catch (Exception ex)
@@ -67,6 +68,7 @@ namespace WebClient
                     Console.WriteLine(ex);
                 }
             }
+            #endregion
         }
 
         private void Configure(MiddleWare<HttpContext> app)
@@ -81,9 +83,12 @@ namespace WebClient
                 catch (Exception ex)
                 {
                     context.Response.State = HttpResponseState.InternalServerError;
+                    context.Response.ContentType = "text/html";
+                    context.Response.Body = new MemoryStream();
+                    context.Response.Write("<head><meta http-equiv=\"content-type\" content=\"text/html; charset =utf-8\" /></head>");
+                    context.Response.Write($"<p>{ex.ToString()}</p>");
                 }
             });
-
             //静态文件处理模型
             app.Add(new StaticsFileMiddleWare());
             //session模块
@@ -91,10 +96,14 @@ namespace WebClient
 
             app.Add(async (context, next) =>
             {
+                
                 context.Response.ContentType = "text/html";
+                context.Response.Write("<head><meta http-equiv=\"content-type\" content=\"text/html; charset =utf-8\" /></head>");
                 context.Response.Write("<h2>hello world !!</h2>");
+                context.Response.Write("<h2>你好世界！</h2>");
                 context.Response.Write($"<h2>sessionId:{context.Request.Cookies["SessionId"]}</h2>");
                 context.Response.Write("<img src='/bg.jpeg'/>");
+                //throw new Exception("test excp");
             });
         }
     }

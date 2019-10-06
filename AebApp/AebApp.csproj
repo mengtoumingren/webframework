@@ -52,12 +52,27 @@
     <Compile Include="Filters\ExceptionFilter_1.cs" />
     <Compile Include="Filters\ExceptionFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\Home\Index.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Index.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Home\Indexp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebClient\WebClient.csproj">
       <Project>{e95d6ccf-2ff4-4775-a501-0df581a728c8}</Project>
       <Name>WebClient</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Index.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>Index.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

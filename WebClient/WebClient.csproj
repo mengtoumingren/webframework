@@ -63,7 +63,9 @@
     <Compile Include="MiddleWares\Mvc\ActionResult\ContentResult.cs" />
     <Compile Include="MiddleWares\Mvc\ActionResult\FileResult.cs" />
     <Compile Include="MiddleWares\Mvc\ActionResult\IActionResult.cs" />
+    <Compile Include="MiddleWares\Mvc\ActionResult\IViewResult.cs" />
     <Compile Include="MiddleWares\Mvc\ActionResult\JsonResult.cs" />
+    <Compile Include="MiddleWares\Mvc\ActionResult\ViewResult.cs" />
     <Compile Include="MiddleWares\Mvc\BaseController.cs" />
     <Compile Include="MiddleWares\Mvc\Configuration.cs" />
     <Compile Include="MiddleWares\Mvc\ControllerFactory.cs" />

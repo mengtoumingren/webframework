@@ -201,6 +201,7 @@ namespace WebClient.Mvc
                     //是 actionresult类型时的处理
                     if (result is IActionResult)
                     {
+                        if(result is IViewResult) ((IViewResult)result).InitView(controller.GetType().Assembly);
                         ((IActionResult)result).Execute(context.context);
                     }
                     //非 actionresult类型时当作对象返回json

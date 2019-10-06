@@ -23,5 +23,18 @@ namespace WebClient.Mvc
         {
             return new FileResult(path,contentType,contentDisposition);
         }
+
+        public IActionResult View(string viewname)
+        {
+            return new ViewResult(viewname);
+        }
+        public IActionResult View(dynamic model)
+        {
+            return new ViewResult(model);
+        }
+        public IActionResult View()
+        {
+            return new ViewResult();
+        }
     }
 }

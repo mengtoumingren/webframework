@@ -23,7 +23,7 @@ namespace WebClient.Mvc
 
         private Regex TemplateRegex()
         {
-            var pattern = Template.Replace("{", "(?<").Replace("}", ">[^/]+)");
+            var pattern = Template.Replace("{", "(?<").Replace("}", ">[^/,^?]+)");
             var regex = new Regex(pattern, RegexOptions.IgnoreCase);
             return regex;
         }

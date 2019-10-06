@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebClient.MiddleWareModule;
 using WebClient.Mvc;
+using WebClient.Mvc.ActionResult;
 using WebClient.Mvc.Filter;
 
 namespace WebClient.Mvc
@@ -188,14 +190,22 @@ namespace WebClient.Mvc
             {
                 Console.WriteLine("core code");
 
-                throw new Exception("构造的异常");
-
-                context.context.Response.ContentType = "text/html";
-                context.context.Response.Write("<head><meta http-equiv=\"content-type\" content=\"text/html; charset =utf-8\" /></head>");
-                context.context.Response.Write("<h2>hello world !!</h2>");
-                context.context.Response.Write("<h2>你好世界！</h2>");
-                context.context.Response.Write($"<h2>sessionId:{context.context.Request.Cookies["SessionId"]}</h2>");
-                context.context.Response.Write("<img src='/bg.jpeg'/>");
+                var factory =ControllerFactoryProvider.GetControllerFactory();
+                var controller =factory.Create(context.Controller);
+                controller.context = context.context;
+                var param = GetParameters(context.Action.GetParameters(), context);
+                var result =context.Action.Invoke(controller, param.Length>0? param:null);
+                //有返回值时
+                if(result!=null)
+                {
+                    //是 actionresult类型时的处理
+                    if (result is IActionResult)
+                    {
+                        ((IActionResult)result).Execute(context.context);
+                    }
+                    //非 actionresult类型时当作对象返回json
+                    else new JsonResult(result).Execute(context.context);
+                }
             });
 
         }
@@ -211,6 +221,76 @@ namespace WebClient.Mvc
         }
 
         /// <summary>
+        /// 从请求中 获取action的参数数据
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="actionContext"></param>
+        /// <returns></returns>
+        private static object[] GetParameters(ParameterInfo[] parameters,ActionContext actionContext)
+        {
+            /*
+             * 取值顺序： url-route-form
+             */
+            var param = new List<Object>();
+            //目前暂时取get请求的参数
+            foreach (var p in parameters)
+            {
+                if (!p.ParameterType.IsPrimitive && !p.ParameterType.Name.ToLower().Equals("string"))
+                {
+                    if(actionContext.context.Request.ContentType.Contains("json"))
+                    {
+                        try
+                        {
+                            using (var reader = new StreamReader(actionContext.context.Request.InputStream))
+                            {
+                                var value = reader.ReadToEnd();
+                                var obj = JsonConvert.DeserializeObject(value, p.ParameterType);
+                                param.Add(obj);
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        var pInstance = Activator.CreateInstance(p.ParameterType);
+                        foreach (var property in p.ParameterType.GetProperties())
+                        {
+                            property.SetValue(pInstance, Convert.ChangeType(GetParameterValue(property.Name.ToLower(),actionContext), null));
+                        }
+                        param.Add(pInstance);
+                    }
+                }
+                else
+                {
+                    param.Add(Convert.ChangeType(GetParameterValue(p.Name.ToLower(), actionContext), p.ParameterType));
+                }
+            }
+            return param.ToArray();
+        }
+
+
+        /// <summary>
+        /// 获取参数值
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="actionContext"></param>
+        /// <returns></returns>
+        private static object GetParameterValue(string name,ActionContext actionContext)
+        {
+            object result = null;
+            if(actionContext.context.Request.Querystring.AllKeys.Contains(name))
+                result = actionContext.context.Request.Querystring[name];
+            else if (actionContext.context.RouteData.AllKeys.Contains(name))
+                result = actionContext.context.RouteData[name];
+            else if (actionContext.context.Request.Form.AllKeys.Contains(name))
+                result = actionContext.context.Request.Form[name];
+            return result;
+        }
+
+        /// <summary>
         /// 匹配路由
         /// </summary>
         /// <param name="context"></param>
@@ -221,9 +301,8 @@ namespace WebClient.Mvc
             Route matchRoute = null;
             if (Configuration.Routes.Count > 0)
             {
-                for (int i = Configuration.Routes.Count - 1; i >= 0; i--)
+                foreach (var route in Configuration.Routes)
                 {
-                    var route = Configuration.Routes[i];
                     if (route.IsMatch(context.Request.Url))
                     {
                         matchRoute = route;

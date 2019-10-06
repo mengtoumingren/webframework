@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AebApp.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace AebApp.Controllers
 {
     public class TestController : BaseController
     {
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return Content("text.index");
@@ -17,6 +19,28 @@ namespace AebApp.Controllers
         public IActionResult Test()
         {
             return Content("text.text");
+        }
+        public object Test1()
+        {
+            return new { code=1,msg= "Test1" };
+        }
+        public object Test2(string p)
+        {
+            return new { code = 1, msg =p };
+        }
+        public object Test3(string p,bool b,int a,string id)
+        {
+            return new { code = 1, msg = $"{p},{b},{a},{id}" };
+        }
+        public IActionResult test4(Model model)
+        {
+            return Json(model);
+        }
+
+        public class Model
+        {
+            public string Name { get; set; }
+            public int age { get; set; }
         }
     }
 }

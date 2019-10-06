@@ -20,5 +20,6 @@ namespace WebClient
         public NameValueCollection Form { get; internal set; }
         public List<HttpRequestFile> Files { get; internal set; }
         public Stream InputStream { get; internal set; }
+        public string ContentType { get => Headers["Content-Type"]; }
     }
 }

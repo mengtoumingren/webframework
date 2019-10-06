@@ -17,7 +17,7 @@ namespace WebClient.Mvc
         /// <returns></returns>
         public static ControllerFactory GetControllerFactory()
         {
-            return controllerFactory;
+            return controllerFactory==null?new ControllerFactory():controllerFactory;
         }
         /// <summary>
         /// 设置自定义控制器工厂

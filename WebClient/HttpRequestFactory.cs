@@ -23,14 +23,14 @@ namespace WebClient
                 var request = new HttpRequest();
                 var splitIndex = msg.IndexOf("\r\n\r\n");
                 var header = msg.Substring(0, splitIndex + 1);
-                var body = msg.Substring(splitIndex + 4, msg.Length - splitIndex - 4);
+                var body = msg.Substring(splitIndex + 4, msg.Length- splitIndex - 4);
                 request.AnalyzeHeader(header);
                 request.AnalyzeBody(body, splitIndex + 4, msg.Length - splitIndex - 4, reqData);
 
                 request.AnalyzeHeader(GetEncodedStr(0, splitIndex + 1,reqData,Encoding.UTF8));
                 request.AnalyzeCookie();
 
-                request.FillInputStream(splitIndex + 4, msg.Length - splitIndex - 4, reqData);
+                request.FillInputStream(splitIndex + 4, msg.Length, reqData);
 
                 return request;
             }
@@ -154,7 +154,7 @@ namespace WebClient
                     //stream.Read(buffer, 0, buffer.Length);
                     //body = Encoding.UTF8.GetString(buffer);
 
-                    body = GetEncodedStr(from,to, reqData, Encoding.UTF8);
+                    body = GetEncodedStr(from, to, reqData, Encoding.UTF8);
 
                     foreach (var param in body.Split('&'))
                     {

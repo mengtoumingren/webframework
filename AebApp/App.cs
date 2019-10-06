@@ -16,6 +16,13 @@ namespace AebApp
             Configuration.Routes.Add(new Route
             {
                 Name = "route",
+                Template = "{controller}/{action}/{id}",
+                DefaultController = "home",
+                DefaultAction = "action"
+            });
+            Configuration.Routes.Add(new Route
+            {
+                Name = "route",
                 Template = "{controller}/{action}",
                 DefaultController = "home",
                 DefaultAction = "action"

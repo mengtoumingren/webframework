@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebClient.Mvc;
 
-namespace WebClient.MiddleWares.Mvc
+namespace WebClient.Mvc
 {
     public class ControllerFactoryProvider
     {

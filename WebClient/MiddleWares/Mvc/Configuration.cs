@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WebClient.Mvc;
 using WebClient.Mvc.Filter;
 
-namespace WebClient.MiddleWares.Mvc
+namespace WebClient.Mvc
 {
     public class Configuration
     {

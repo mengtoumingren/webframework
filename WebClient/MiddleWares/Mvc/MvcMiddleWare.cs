@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using WebClient.MiddleWareModule;
-using WebClient.MiddleWares.Mvc;
+using WebClient.Mvc;
 using WebClient.Mvc.Filter;
 
 namespace WebClient.Mvc
@@ -15,8 +15,8 @@ namespace WebClient.Mvc
     {
         private static MiddleWareHandler<ActionContext> middleWareHandler;
         private static MiddleWare<ActionContext> middleWare;
-        private static Dictionary<string,Type> dicControllerCache;
-        private static Dictionary<string,MethodInfo> dicActionCache;
+        private static Dictionary<string, Type> dicControllerCache;
+        private static Dictionary<string, MethodInfo> dicActionCache;
         //action filter 中间件
         private static MiddleWareHandler<ActionMiddWareContext> actionMiddleWareHandler;
         private static MiddleWare<ActionMiddWareContext> actionMiddleWare;
@@ -32,6 +32,8 @@ namespace WebClient.Mvc
             InitApplication();
             //初始化动作过滤器
             InitActionFilter();
+
+            Console.WriteLine("启动成功。。。");
         }
 
         /// <summary>
@@ -40,27 +42,29 @@ namespace WebClient.Mvc
         private static void LoadCache()
         {
             dicControllerCache = new Dictionary<string, Type>();
-            dicActionCache =new Dictionary<string, MethodInfo>();
+            dicActionCache = new Dictionary<string, MethodInfo>();
 
             //从指定目录下找到处理程序并缓存起来
-            var rootdir = Assembly.GetExecutingAssembly().Location;
+            var rootdir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (Directory.Exists(rootdir))
             {
                 var files = Directory.GetFiles(rootdir).Where(f => f.EndsWith(".dll"));
                 foreach (var file in files)
                 {
                     //载入所欲继承 basecontroller 的类
-                    var controllerTypes = Assembly.LoadFile(file).GetTypes().Where(t => t.IsSubclassOf(typeof(BaseController))&&t.Name.EndsWith("Controller"));
+                    var controllerTypes = Assembly.LoadFile(file).GetTypes().Where(t => t.IsSubclassOf(typeof(BaseController)) && t.Name.EndsWith("Controller"));
 
                     foreach (var type in controllerTypes)
                     {
-                        var methods =type.GetMethods(BindingFlags.Public);
-                        var actions = new List<string>();
+                        var methods = type.GetMethods();
                         foreach (var action in methods)
                         {
-                            actions.Add(action.Name);
-                            dicActionCache.Add($"{type.Name.Replace("Controller", "")}.{action.Name}".ToLower(), action);
-                            dicControllerCache.Add(type.Name.Replace("Controller", "").ToLower(), type);
+                            var actionName = $"{type.Name.Replace("Controller", "")}.{action.Name}".ToLower();
+                            if (!dicActionCache.ContainsKey(actionName))
+                                dicActionCache.Add(actionName, action);
+                            var controllerName = type.Name.Replace("Controller", "").ToLower();
+                            if (!dicControllerCache.ContainsKey(controllerName))
+                                dicControllerCache.Add(controllerName, type);
                         }
                     }
                 }
@@ -72,7 +76,7 @@ namespace WebClient.Mvc
         private static void InitApplication()
         {
             //从指定目录下找到处理程序并缓存起来
-            var rootdir = Assembly.GetExecutingAssembly().Location;
+            var rootdir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             if (Directory.Exists(rootdir))
             {
                 var files = Directory.GetFiles(rootdir).Where(f => f.EndsWith(".dll"));
@@ -80,14 +84,14 @@ namespace WebClient.Mvc
                 {
                     //载入所欲继承 basecontroller 的类
                     var appType = Assembly.LoadFile(file).GetTypes().Where(t => t.IsSubclassOf(typeof(WebApplication))).FirstOrDefault();
-                    if(appType!=null)
+                    if (appType != null)
                     {
-                        var app =Activator.CreateInstance(appType) as WebApplication;
+                        var app = Activator.CreateInstance(appType) as WebApplication;
                         app.Start();
                     }
                 }
             }
-            
+
         }
         /// <summary>
         /// 初始化动作过滤器
@@ -99,7 +103,6 @@ namespace WebClient.Mvc
             var filters = Configuration.Filters.Where(f => f.GetType().IsSubclassOf(typeof(ActionFilter))).ToList();
             if (filters.Count > 0)
             {
-                filters.Reverse();
                 foreach (ActionFilter filter in filters)
                 {
                     actionMiddleWare.Add(async (context, next) =>
@@ -129,7 +132,7 @@ namespace WebClient.Mvc
                 catch (Exception ex)
                 {
                     var filters = Configuration.Filters.Where(f => f.GetType().IsSubclassOf(typeof(ExceptionFilter))).ToList();
-                    if(filters.Count>0)
+                    if (filters.Count > 0)
                     {
                         var expcontext = new ExceptionContext();
                         expcontext.context = context.context;
@@ -140,7 +143,7 @@ namespace WebClient.Mvc
                         foreach (ExceptionFilter filter in filters)
                         {
                             filter.Resole(expcontext);
-                            if(expcontext.Result!=null)
+                            if (expcontext.Result != null)
                             {
                                 expcontext.Result.Execute(expcontext.context);
                                 break;
@@ -180,15 +183,13 @@ namespace WebClient.Mvc
                 await actionMiddleWareHandler.Execute(new ActionMiddWareContext { Action = next, ActionContext = context });
             });
 
-            //行为过滤器
-            app.Add(async (context, next) =>
-            {
-                await actionMiddleWareHandler.Execute(new ActionMiddWareContext { Action = next, ActionContext = context });
-            });
-
             //核心逻辑
             app.Add(async (context, next) =>
             {
+                Console.WriteLine("core code");
+
+                throw new Exception("构造的异常");
+
                 context.context.Response.ContentType = "text/html";
                 context.context.Response.Write("<head><meta http-equiv=\"content-type\" content=\"text/html; charset =utf-8\" /></head>");
                 context.context.Response.Write("<h2>hello world !!</h2>");
@@ -206,15 +207,7 @@ namespace WebClient.Mvc
         /// <returns></returns>
         public async Task DealWith(HttpContext context, Func<Task> next)
         {
-            Configuration.Routes.Add(new Route
-            {
-                Name = "route1",
-                Template = "api/{controller}/{action}",
-                DefaultController = "Home",
-                DefaultAction = "Index"
-            });
             await MatchRoute(context);
-
         }
 
         /// <summary>
@@ -225,6 +218,7 @@ namespace WebClient.Mvc
         private async Task MatchRoute(HttpContext context)
         {
             var isMatch = false;
+            Route matchRoute = null;
             if (Configuration.Routes.Count > 0)
             {
                 for (int i = Configuration.Routes.Count - 1; i >= 0; i--)
@@ -232,23 +226,24 @@ namespace WebClient.Mvc
                     var route = Configuration.Routes[i];
                     if (route.IsMatch(context.Request.Url))
                     {
+                        matchRoute = route;
                         isMatch = true;
                         context.RouteData = route.GetRouteData(context.Request.Url);
                         break;
                     }
                 }
-                //都不匹配的话，取第一个路由的默认值
-                if (!isMatch)
+                //都不匹配的话，
+                if (!isMatch) context.Response.State = HttpResponseState.NotFound;
+                else
                 {
-                    var route = Configuration.Routes[Configuration.Routes.Count - 1];
-                    context.RouteData = new System.Collections.Specialized.NameValueCollection();
-                    context.RouteData["controller"] = route.DefaultController;
-                    context.RouteData["action"] = route.DefaultAction;
+                    //如果匹配但是控制器和动作匹配不上则采用默认action
+                    if (context.RouteData["controller"] == null) context.RouteData["controller"] = matchRoute.DefaultController.ToLower();
+                    if (context.RouteData["action"] == null) context.RouteData["action"] = matchRoute.DefaultController.ToLower();
                 }
                 //执行中间件
                 await ExecuteMiddleWare(context);
             }
-            else throw new Exception("路由为空！");
+            else context.Response.State = HttpResponseState.NotFound;
         }
 
         /// <summary>
@@ -258,13 +253,16 @@ namespace WebClient.Mvc
         /// <returns></returns>
         private async Task ExecuteMiddleWare(HttpContext httpContext)
         {
-            if(!dicActionCache.ContainsKey($"{httpContext.RouteData["controller"]}.{httpContext.RouteData["action"]}")) throw new Exception("路由为空！");
-
-            var actionContext = new ActionContext();
-            actionContext.context = httpContext;
-            actionContext.Controller = dicControllerCache[httpContext.RouteData["controller"]];
-            actionContext.Action = dicActionCache[httpContext.RouteData["action"]];
-            await middleWareHandler.Execute(actionContext);
+            if (!dicActionCache.ContainsKey($"{httpContext.RouteData["controller"]}.{httpContext.RouteData["action"]}"))
+                httpContext.Response.State = HttpResponseState.NotFound;
+            else
+            {
+                var actionContext = new ActionContext();
+                actionContext.context = httpContext;
+                actionContext.Controller = dicControllerCache[httpContext.RouteData["controller"].ToLower()];
+                actionContext.Action = dicActionCache[$"{httpContext.RouteData["controller"]}.{httpContext.RouteData["action"]}".ToLower()];
+                await middleWareHandler.Execute(actionContext);
+            }
         }
     }
 }

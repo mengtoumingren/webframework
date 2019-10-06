@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebClient.MiddleWareModule
 {
-    public interface IMiddleWare<T>
+    internal interface IMiddleWare<T>
     {
         Task DealWith(T context, Func<Task> next);
     }

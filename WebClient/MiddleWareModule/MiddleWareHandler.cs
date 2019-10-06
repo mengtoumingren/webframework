@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebClient.MiddleWareModule
 {
-    public class MiddleWareHandler<T>
+    internal class MiddleWareHandler<T>
     {
         public List<Func<T, Func<Task>, Task>> MiddleWares = null;
         private bool IsReversed = false;

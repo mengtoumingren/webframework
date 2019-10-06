@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebClient.Mvc.Filter
 {
-    public abstract class ActionFilter
+    public abstract class ActionFilter:IFilter
     {
         /// <summary>
         /// 执行中（前）

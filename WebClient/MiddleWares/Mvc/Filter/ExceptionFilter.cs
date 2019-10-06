@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebClient.Mvc.Filter
 {
-    public abstract class ExceptionFilter
+    public abstract class ExceptionFilter : IFilter
     {
         public abstract void Resole(ExceptionContext exceptionContext);
     }

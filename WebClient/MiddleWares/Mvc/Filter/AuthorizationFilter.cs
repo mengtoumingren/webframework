@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebClient.Mvc.Filter
 {
-    public abstract class AuthorizationFilter
+    public abstract class AuthorizationFilter : IFilter
     {
         public abstract void OnAuthorization(ActionContext actionContext);
     }

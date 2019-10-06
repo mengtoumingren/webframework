@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using WebClient.Mvc.ActionResult;
+using WebClient.Mvc.Filter;
 
 namespace WebClient.Mvc.ActionResult
 {
@@ -41,23 +42,23 @@ namespace WebClient.Mvc.ActionResult
         {
             this.model = model;
         }
-        public void Execute(HttpContext httpContext)
+        public void Execute(ActionContext actionContext)
         {
-            httpContext.Response.ContentType = $"text/html ;charset=utf-8";
+            actionContext.context.Response.ContentType = $"text/html ;charset=utf-8";
 
 
-            var viewTypeName = $".Views.{httpContext.RouteData["controller"]}.{(viewname==null? httpContext.RouteData["action"]:viewname)}".ToLower();
+            var viewTypeName = $".Views.{actionContext.context.RouteData["controller"]}.{(viewname==null? actionContext.context.RouteData["action"]:viewname)}".ToLower();
             var key =dicViews.Keys.Where(k => k.ToLower().EndsWith(viewTypeName)).FirstOrDefault();
             if(dicViews.ContainsKey(key))
             {
                 dynamic page = Activator.CreateInstance(dicViews[key], model == null ? null : new object[] { model });
                 var pageContent = page.TransformText();
-                httpContext.Response.Write(pageContent);
+                actionContext.context.Response.Write(pageContent);
             }
             else
             {
-                httpContext.Response.State = HttpResponseState.NotFound;
-                httpContext.Response.Write($"不存在的视图路径：{viewTypeName}");
+                actionContext.context.Response.State = HttpResponseState.NotFound;
+                actionContext.context.Response.Write($"不存在的视图路径：{viewTypeName}");
             }
         }
 

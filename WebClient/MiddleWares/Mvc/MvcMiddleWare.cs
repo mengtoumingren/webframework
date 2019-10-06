@@ -147,7 +147,7 @@ namespace WebClient.Mvc
                             filter.Resole(expcontext);
                             if (expcontext.Result != null)
                             {
-                                expcontext.Result.Execute(expcontext.context);
+                                expcontext.Result.Execute(expcontext);
                                 break;
                             }
                         }
@@ -170,7 +170,7 @@ namespace WebClient.Mvc
                         if (context.Result != null)
                         {
                             isAuthorized = false;
-                            context.Result.Execute(context.context);
+                            context.Result.Execute(context);
                             break;
                         }
                     }
@@ -202,10 +202,10 @@ namespace WebClient.Mvc
                     if (result is IActionResult)
                     {
                         if(result is IViewResult) ((IViewResult)result).InitView(controller.GetType().Assembly);
-                        ((IActionResult)result).Execute(context.context);
+                        ((IActionResult)result).Execute(context);
                     }
                     //非 actionresult类型时当作对象返回json
-                    else new JsonResult(result).Execute(context.context);
+                    else new JsonResult(result).Execute(context);
                 }
             });
 
@@ -321,7 +321,7 @@ namespace WebClient.Mvc
                     if (context.RouteData["action"] == null) context.RouteData["action"] = matchRoute.DefaultController.ToLower();
                 }
                 //执行中间件
-                await ExecuteMiddleWare(context);
+                await ExecuteMiddleWare(context, matchRoute);
             }
             else context.Response.State = HttpResponseState.NotFound;
         }
@@ -331,13 +331,14 @@ namespace WebClient.Mvc
         /// </summary>
         /// <param name="httpContext"></param>
         /// <returns></returns>
-        private async Task ExecuteMiddleWare(HttpContext httpContext)
+        private async Task ExecuteMiddleWare(HttpContext httpContext,Route route)
         {
             if (!dicActionCache.ContainsKey($"{httpContext.RouteData["controller"]}.{httpContext.RouteData["action"]}"))
                 httpContext.Response.State = HttpResponseState.NotFound;
             else
             {
                 var actionContext = new ActionContext();
+                actionContext.Route = route;
                 actionContext.context = httpContext;
                 actionContext.Controller = dicControllerCache[httpContext.RouteData["controller"].ToLower()];
                 actionContext.Action = dicActionCache[$"{httpContext.RouteData["controller"]}.{httpContext.RouteData["action"]}".ToLower()];

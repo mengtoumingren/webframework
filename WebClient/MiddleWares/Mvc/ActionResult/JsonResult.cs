@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebClient.Mvc.Filter;
 
 namespace WebClient.Mvc.ActionResult
 {
@@ -18,10 +19,10 @@ namespace WebClient.Mvc.ActionResult
             this.encoding = encoding == null ? Encoding.UTF8 : encoding;
         }
 
-        public void Execute(HttpContext httpContext)
+        public void Execute(ActionContext actionContext)
         {
-            httpContext.Response.ContentType = $"application/json;charset={encoding.BodyName}";
-            httpContext.Response.Write(JsonConvert.SerializeObject(this.value));
+            actionContext.context.Response.ContentType = $"application/json;charset={encoding.BodyName}";
+            actionContext.context.Response.Write(JsonConvert.SerializeObject(this.value));
         }
     }
 }

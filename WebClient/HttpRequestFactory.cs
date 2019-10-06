@@ -82,7 +82,7 @@ namespace WebClient
             var rowInfo = requestRow.Split(' ');
             request.Method = rowInfo[0];
             request.Url = rowInfo[1];
-            request.HttpVersion = rowInfo[2].Split('/')[1];
+            request.HttpVersion = rowInfo[2];
             //处理url上的参数
             try
             {

@@ -14,5 +14,6 @@ namespace WebClient.Mvc.Filter
         public Type Controller { get; set; }
         public MethodInfo Action { get; set; }
         public IActionResult Result { get; set; }
+        public Route Route { get; set; }
     }
 }

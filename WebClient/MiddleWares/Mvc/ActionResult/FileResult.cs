@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebClient.Mvc.Filter;
 
 namespace WebClient.Mvc.ActionResult
 {
@@ -19,13 +20,13 @@ namespace WebClient.Mvc.ActionResult
             this.contentDisposition = contentDisposition;
         }
 
-        public void Execute(HttpContext httpContext)
+        public void Execute(ActionContext actionContext)
         {
-            httpContext.Response.WriteFile(path);
+            actionContext.context.Response.WriteFile(path);
             if(!string.IsNullOrEmpty(contentType))
-                httpContext.Response.ContentType = contentType;
+                actionContext.context.Response.ContentType = contentType;
             if (!string.IsNullOrEmpty(contentType))
-                httpContext.Response.Headers["Content-Disposition"] = contentDisposition;
+                actionContext.context.Response.Headers["Content-Disposition"] = contentDisposition;
         }
     }
 }

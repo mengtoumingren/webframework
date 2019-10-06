@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebClient.Mvc.Filter;
 
 namespace WebClient.Mvc.ActionResult
 {
@@ -17,10 +18,10 @@ namespace WebClient.Mvc.ActionResult
             this.encoding = encoding==null?Encoding.UTF8:encoding;
         }
         
-        public void Execute(HttpContext httpContext)
+        public void Execute(ActionContext actionContext)
         {
-            httpContext.Response.ContentType = $"text/html ;charset={encoding.BodyName}";
-            httpContext.Response.Write(Content);
+            actionContext.context.Response.ContentType = $"text/html ;charset={encoding.BodyName}";
+            actionContext.context.Response.Write(Content);
         }
     }
 }

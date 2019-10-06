@@ -36,10 +36,6 @@ namespace AebApp.Controllers
         {
             return Json(model);
         }
-        public IActionResult test5()
-        {
-            return new RedirectResult("home/index");
-        }
 
         public class Model
         {

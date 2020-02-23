@@ -1,0 +1,12 @@
+name: .NET Core
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: callback
+      run: curl 'https://www.baidu.com/index.html'

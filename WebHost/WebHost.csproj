@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{15330F34-B09E-4DAC-822E-3D3049F04552}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WebHost</RootNamespace>
+    <AssemblyName>WebHost</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RazorEngine, Version=3.10.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HostService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebClient\Attributes\RemarkAttribute.cs" />
+    <Compile Include="WebClient\Cache.cs" />
+    <Compile Include="WebClient\Client.cs" />
+    <Compile Include="WebClient\Extends\EnumExtends.cs" />
+    <Compile Include="WebClient\HttpContext.cs" />
+    <Compile Include="WebClient\HttpContextFactory.cs" />
+    <Compile Include="WebClient\HttpPostedFile.cs" />
+    <Compile Include="WebClient\HttpRequest.cs" />
+    <Compile Include="WebClient\HttpRequestFactory.cs" />
+    <Compile Include="WebClient\HttpRequestFile.cs" />
+    <Compile Include="WebClient\HttpResponse.cs" />
+    <Compile Include="WebClient\HttpResponseFactory.cs" />
+    <Compile Include="WebClient\HttpResponseState.cs" />
+    <Compile Include="WebClient\IConfigure.cs" />
+    <Compile Include="WebClient\MiddleWareModule\IMiddleWare.cs" />
+    <Compile Include="WebClient\MiddleWareModule\MiddleWare.cs" />
+    <Compile Include="WebClient\MiddleWareModule\MiddleWareHandler.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\ActionResult\ContentResult.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\ActionResult\FileResult.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\ActionResult\IActionResult.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\ActionResult\JsonResult.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\ActionResult\ViewResult.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\BaseController.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Configuration.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\ControllerFactory.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\ControllerFactoryProvider.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Filter\ActionContext.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Filter\ActionFilter.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Filter\ActionMiddWareContext.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Filter\AuthorizationFilter.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Filter\ExceptionContext.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Filter\ExceptionFilter.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Filter\IFilter.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\MvcMiddleWare.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\MvcOptions.cs" />
+    <Compile Include="WebClient\MiddleWares\Mvc\Route.cs" />
+    <Compile Include="WebClient\MiddleWares\Session\SessionMiddleWare.cs" />
+    <Compile Include="WebClient\MiddleWares\StaticsFile\StaticsFileMiddleWare.cs" />
+    <Compile Include="WebClient\Session.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
